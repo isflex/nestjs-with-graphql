@@ -83,7 +83,7 @@ mutation UpdateUser($updateUserInput:UpdateUserInput!){
 
 {
  "updateUserInput": {
-  "_id": "63d46d22098ec866b470b5ee",
+  "_id": "63d51ae7fa405df1b5fe2cc1",
   "firstName": "John",
   "lastName": "Doe"
  }
@@ -149,3 +149,83 @@ query {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
+
+########################################
+## Authentification - Create an authentificated user
+########################################
+
+mutation CreateUser($createUserInput: CreateUserInput!){
+  createUser(createUserInput:$createUserInput){
+    _id
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+{
+  "createUserInput":{
+    "firstName":"Marco",
+    "lastName":"Silva",
+    "email":"my_emai+oll@gmail.com",
+    "role":"User",
+    "password": "popCorn!23"
+  }
+}
+
+########################################
+## test the login mutation with:
+########################################
+
+mutation loginUser($loginCredentials:LoginUserInput!) {
+	loginUser(loginUserInput:$loginCredentials) {
+    access_token
+	}
+}
+
+{
+  "loginCredentials":{
+    "email":"my_emai+oll@gmail.com",
+    "password": "popCorn!23"
+  }
+}
+
+########################################
+## When unauthenticated, If we try to test our GraphQL playground with this query, then we will have the follwing:
+########################################
+
+{
+  "errors": [
+    {
+      "message": "Unauthorized",
+      "extensions": {
+        "code": "UNAUTHENTICATED",
+        "response": {
+          "statusCode": 401,
+          "message": "Unauthorized"
+        }
+      }
+    }
+  ],
+  "data": null
+}
+
+########################################
+## When using our loginUser mutation, we will need to take the token and add it in our headers:
+########################################
+
+{
+  "data": {
+    "loginUser": {
+      "access_token": 
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im15X2VtYWkrb2xsQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ik1hcmNvIiwibGFzdE5hbWUiOiJTaWx2YSIsInJvbGUiOiJVc2VyIiwic3ViIjoiNjNkNTM1NjMxODJlYzVmYzFhMTAzNDM3IiwiaWF0IjoxNjc0OTE3MjU4LCJleHAiOjE2NzQ5MjMyNTh9.I7VqGw2PLRe4I84vNS4KeA5HQLEC0zkhdwAvfnx6JW8"
+      }
+  }
+}
+
+=>
+
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im15X2VtYWkrb2xsQGdtYWlsLmNvbSIsImZpcnN0TmFtZSI6Ik1hcmNvIiwibGFzdE5hbWUiOiJTaWx2YSIsInJvbGUiOiJVc2VyIiwic3ViIjoiNjNkNTM1NjMxODJlYzVmYzFhMTAzNDM3IiwiaWF0IjoxNjc0OTE3MjU4LCJleHAiOjE2NzQ5MjMyNTh9.I7VqGw2PLRe4I84vNS4KeA5HQLEC0zkhdwAvfnx6JW8"
+}
