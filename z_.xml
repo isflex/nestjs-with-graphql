@@ -1,0 +1,151 @@
+# https://javascript.plainenglish.io/graphql-nodejs-mongodb-made-easy-with-nestjs-and-mongoose-29f9c0ea7e1d
+# https://makinhs.medium.com/e2e-testing-made-easy-with-nestjs-part-3-of-graphql-nodejs-mongodb-series-ba913bad7cf2
+# https://makinhs.medium.com/authentication-made-easy-with-nestjs-part-4-of-how-to-build-a-graphql-mongodb-d6057eae3fdf
+
+########################################
+## The simple mutation, without dynamic vars, is here:
+########################################
+
+mutation{
+  createUser(createUserInput:{
+    firstName:"Marcos",
+    lastName:"Silva",
+    email:"my_email@gmail.com",
+    role:"User"
+  }){
+    _id
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+########################################
+## mutation using dynamic parameters
+########################################
+
+mutation CreateUser($createUserInput: CreateUserInput!){
+  createUser(createUserInput:$createUserInput){
+    _id
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+{
+  "createUserInput":{
+    "firstName":"Marco",
+    "lastName":"Silva",
+    "email":"my_emai+oll@gmail.com",
+    "role":"User"
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+########################################
+## find one user query.
+########################################
+
+query GetUser($userId: String!) {
+  user(_id: $userId) {
+    _id
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+{
+  "userId": "63d46d22098ec866b470b5ee" //in your case will be different value
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+########################################
+## update a user
+########################################
+
+mutation UpdateUser($updateUserInput:UpdateUserInput!){
+  updateUser(updateUserInput:$updateUserInput){
+    _id
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+{
+ "updateUserInput": {
+  "_id": "63d46d22098ec866b470b5ee",
+  "firstName": "John",
+  "lastName": "Doe"
+ }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+########################################
+## Offset Pagination
+########################################
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+########################################
+## cursor-based pagination
+########################################
+
+Getting the first 2 users:
+
+query {
+  listUsersWithCursor(args: { first: 2 }) {
+    page {
+      edges {
+        node {
+          _id
+          firstName
+          lastName
+          email
+          role
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasPreviousPage
+        hasNextPage
+      }
+    }
+  }
+}
+
+Getting the “endCursor” will allow us to move to the next two users:
+
+query {
+  listUsersWithCursor(args: { first: 2 }) {
+    page {
+      edges {
+        node {
+          _id
+          firstName
+          lastName
+          email
+          role
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasPreviousPage
+        hasNextPage
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
